@@ -2,6 +2,8 @@ local love = require("love")
 local theme = require("theme")
 local Icon = require("components.icon")
 
+local isMobile = love.system.getOS() == "iOS" or love.system.getOS() == "Android"
+
 local Dropdown = {}
 Dropdown.__index = Dropdown
 
@@ -75,8 +77,8 @@ function Dropdown:_cardRect(visibleOpts)
 end
 
 function Dropdown:update()
-    if self.visible then
-        love.keyboard.setTextInput(true)
+    if self.visible and not isMobile then
+        love.keyboard.setTextInput(true) -- per-frame for macOS IME
     end
 end
 

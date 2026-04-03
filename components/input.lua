@@ -2,6 +2,8 @@ local theme = require("theme")
 local InputField = require("lib.InputField")
 local love = require("love")
 
+local isMobile = love.system.getOS() == "iOS" or love.system.getOS() == "Android"
+
 local Input = {}
 Input.__index = Input
 
@@ -83,7 +85,9 @@ end
 function Input:update(dt)
     if self.focused then
         self:_initField()
-        love.keyboard.setTextInput(true)
+        if not isMobile then
+            love.keyboard.setTextInput(true) -- per-frame for macOS IME
+        end
         self.field:update(dt)
     end
 end
