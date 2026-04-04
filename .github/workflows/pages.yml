@@ -1,0 +1,66 @@
+name: Deploy web build to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build LÖVE 12 WASM thingie
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Package it
+        run: |
+          zip -9 -r game.love . -x ".*" -x "web_build/*" -x "build/*"
+
+      - name: Checkout love-web-builder
+        uses: actions/checkout@v4
+        with:
+          repository: rozenmad/love-web-builder
+          path: love-web-builder
+
+      # "-m 134217728" ~=128MB of pre-allocated memory for the game, have to manually adjust it in future
+      - name: Compile for Web
+        run: |
+          cd love-web-builder
+          python build.py ../game.love ../web_build -n "Shadcn Love2D" -m 134217728
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "web_build"
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
