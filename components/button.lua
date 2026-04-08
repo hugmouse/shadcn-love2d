@@ -85,10 +85,9 @@ function Button:_computeWidth()
     return self._textW + iconW + px * 2
 end
 
-function Button:update(dt)
+function Button:update(_dt)
     local mx, my = love.mouse.getPosition()
-    self.hovered = mx >= self.x and mx <= self.x + self.w
-        and my >= self.y and my <= self.y + self.h
+    self.hovered = mx >= self.x and mx <= self.x + self.w and my >= self.y and my <= self.y + self.h
 end
 
 function Button:draw()
@@ -96,8 +95,7 @@ function Button:draw()
 
     if self.variant == "default" then
         love.graphics.setColor(theme.colors.border)
-        love.graphics.rectangle("fill", self.x - 1, self.y - 1,
-            self.w + 2, self.h + 2, r, r)
+        love.graphics.rectangle("fill", self.x - 1, self.y - 1, self.w + 2, self.h + 2, r, r)
         if self.hovered then
             love.graphics.setColor(theme.colors.surface_hover)
         else
@@ -113,8 +111,7 @@ function Button:draw()
         end
         if self.hovered then
             love.graphics.setColor(theme.colors.hover)
-            love.graphics.rectangle("fill", self.x + 1, self.y + 1,
-                self.w - 2, self.h - 2, r, r)
+            love.graphics.rectangle("fill", self.x + 1, self.y + 1, self.w - 2, self.h - 2, r, r)
         end
     elseif self.variant == "ghost" then
         if self.hovered then
@@ -157,9 +154,11 @@ function Button:draw()
     end
 end
 
-function Button:mousepressed(mx, my, button)
+function Button:mousepressed(_mx, _my, button)
     if button == 1 and self.hovered then
-        if self.onClick then self.onClick() end
+        if self.onClick then
+            self.onClick()
+        end
         return true
     end
     return false

@@ -1,13 +1,15 @@
 local love = require("love")
 
+---@diagnostic disable-next-line: undefined-field
 if love._os == "Windows" then
-    local ffi = require "ffi"
-    ffi.cdef [[ bool SetProcessDPIAware(); ]]
-    ffi.C.SetProcessDPIAware();
+    local ffi = require("ffi")
+    ffi.cdef([[ bool SetProcessDPIAware(); ]])
+    ffi.C.SetProcessDPIAware()
 end
 
 function love.conf(t)
     t.identity = "shadcn-love2d"
+    t.version = "12.0"
     t.window.title = "shadcn-love2d"
     t.window.width = 1280
     t.window.height = 720

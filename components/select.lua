@@ -83,16 +83,22 @@ function Select:draw()
     else
         love.graphics.setColor(theme.colors.muted)
     end
-    love.graphics.print(label, self.x + 12,
-        self.y + (self.h - theme.fontH.body) / 2)
+    love.graphics.print(label, self.x + 12, self.y + (self.h - theme.fontH.body) / 2)
 
     -- Chevron
-    Icon.draw("chevron-down", self.x + self.w - 24,
-        self.y + (self.h - 12) / 2, 12, theme.colors.muted)
+    Icon.draw(
+        "chevron-down",
+        self.x + self.w - 24,
+        self.y + (self.h - 12) / 2,
+        12,
+        theme.colors.muted
+    )
 end
 
 function Select:drawOverlay()
-    if not self.open then return end
+    if not self.open then
+        return
+    end
 
     local font = theme.fonts.body
     love.graphics.setFont(font)
@@ -124,13 +130,14 @@ function Select:drawOverlay()
         -- Label
         love.graphics.setFont(font)
         love.graphics.setColor(theme.colors.foreground)
-        love.graphics.print(opt.label, dx + 30,
-            oy + (self.optionH - theme.fontH.body) / 2)
+        love.graphics.print(opt.label, dx + 30, oy + (self.optionH - theme.fontH.body) / 2)
     end
 end
 
 function Select:mousepressed(mx, my, btn)
-    if btn ~= 1 then return false end
+    if btn ~= 1 then
+        return false
+    end
 
     local tx, ty, tw, th = self:_triggerRect()
 
@@ -172,7 +179,9 @@ function Select:mousepressed(mx, my, btn)
 end
 
 function Select:mousemoved(mx, my)
-    if not self.open then return end
+    if not self.open then
+        return
+    end
 
     local dx, dy, dw, dh = self:_dropdownRect()
     if mx >= dx and mx <= dx + dw and my >= dy and my <= dy + dh then
@@ -188,7 +197,9 @@ function Select:mousemoved(mx, my)
 end
 
 function Select:keypressed(key)
-    if not self.open then return false end
+    if not self.open then
+        return false
+    end
     if key == "escape" then
         self.open = false
         return true

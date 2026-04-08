@@ -2,32 +2,32 @@ local love = require("love")
 local svglover = require("lib.svglover")
 
 local lg = love.graphics
-local loadstring = loadstring
+local loadstring = load
 
 local Icon = {}
 
 -- Map app icon names → SVG filenames (handles legacy name differences)
 local iconFiles = {
-    ["circle"]          = "circle",
-    ["timer"]           = "timer",
-    ["check-circle"]    = "circle-check",
-    ["circle-slash"]    = "ban",
+    ["circle"] = "circle",
+    ["timer"] = "timer",
+    ["check-circle"] = "circle-check",
+    ["circle-slash"] = "ban",
     ["question-circle"] = "circle-help",
-    ["arrow-up"]        = "arrow-up",
-    ["arrow-right"]     = "arrow-right",
-    ["arrow-down"]      = "arrow-down",
-    ["ellipsis"]        = "ellipsis",
-    ["plus-circle"]     = "circle-plus",
-    ["search"]          = "search",
+    ["arrow-up"] = "arrow-up",
+    ["arrow-right"] = "arrow-right",
+    ["arrow-down"] = "arrow-down",
+    ["ellipsis"] = "ellipsis",
+    ["plus-circle"] = "circle-plus",
+    ["search"] = "search",
     ["chevrons-up-down"] = "chevrons-up-down",
-    ["chevron-up"]      = "chevron-up",
-    ["chevron-down"]    = "chevron-down",
-    ["chevron-right"]   = "chevron-right",
-    ["chevron-left"]    = "chevron-left",
-    ["check"]           = "check",
-    ["chevrons-left"]   = "chevrons-left",
-    ["chevrons-right"]  = "chevrons-right",
-    ["eye-off"]         = "eye-off",
+    ["chevron-up"] = "chevron-up",
+    ["chevron-down"] = "chevron-down",
+    ["chevron-right"] = "chevron-right",
+    ["chevron-left"] = "chevron-left",
+    ["check"] = "check",
+    ["chevrons-left"] = "chevrons-left",
+    ["chevrons-right"] = "chevrons-right",
+    ["eye-off"] = "eye-off",
 }
 
 -- Cached draw data per icon: { func = compiled_fn, extdata = {...} }
@@ -52,7 +52,9 @@ end
 
 function Icon.draw(name, x, y, size, color)
     local entry = cache[name]
-    if not entry then return end
+    if not entry then
+        return
+    end
 
     size = size or 16
     color = color or { 0.631, 0.631, 0.659 }

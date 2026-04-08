@@ -1,20 +1,20 @@
-local screen          = require("screens.task_list")
-local theme           = require("theme")
-local Icon            = require("components.icon")
-local profiler        = require("lib.profile")
-local love            = require("love")
+local screen = require("screens.task_list")
+local theme = require("theme")
+local Icon = require("components.icon")
+local profiler = require("lib.profile")
+local love = require("love")
 
-local focused         = true
+local focused = true
 local profilerEnabled = false
-local profilerRows    = {}
-local profilerFrame   = 0
+local profilerRows = {}
+local profilerFrame = 0
 
-local profCols        = {
-    { label = "#",        width = 28,  align = "r" },
+local profCols = {
+    { label = "#", width = 28, align = "r" },
     { label = "Function", width = 180, align = "l" },
-    { label = "Calls",    width = 64,  align = "r" },
-    { label = "Time",     width = 72,  align = "r" },
-    { label = "Source",   width = 200, align = "l" },
+    { label = "Calls", width = 64, align = "r" },
+    { label = "Time", width = 72, align = "r" },
+    { label = "Source", width = 200, align = "l" },
 }
 
 local function formatTime(t)
@@ -28,17 +28,19 @@ local function formatTime(t)
 end
 
 local function drawProfilerOverlay()
-    local stats    = love.graphics.getStats()
-    local font     = theme.fonts.mono
+    local stats = love.graphics.getStats()
+    local font = theme.fonts.mono
     local prevFont = love.graphics.getFont()
     love.graphics.setFont(font)
 
-    local pad       = 10
-    local cellPadX  = 8
-    local rowH      = 18
-    local headerH   = 32
+    local pad = 10
+    local cellPadX = 8
+    local rowH = 18
+    local headerH = 32
     local totalColW = 0
-    for _, c in ipairs(profCols) do totalColW = totalColW + c.width end
+    for _, c in ipairs(profCols) do
+        totalColW = totalColW + c.width
+    end
     local panelW = totalColW + (#profCols + 1) * cellPadX + 2 * pad
     local rowCount = math.max(#profilerRows, 1)
     local tableH = (rowCount + 1) * rowH -- +1 for header row
@@ -143,10 +145,14 @@ function love.load()
     screen.load()
 end
 
-function love.focus(f) focused = f end
+function love.focus(f)
+    focused = f
+end
 
 function love.update(dt)
-    if not focused then return end
+    if not focused then
+        return
+    end
     screen.update(dt)
     if profilerEnabled then
         profilerFrame = profilerFrame + 1
@@ -164,13 +170,21 @@ function love.draw()
     end
 end
 
-function love.resize(w, h) screen.resize(w, h) end
+function love.resize(w, h)
+    screen.resize(w, h)
+end
 
-function love.mousepressed(x, y, btn, ist, presses) screen.mousepressed(x, y, btn, presses) end
+function love.mousepressed(x, y, btn, _ist, presses)
+    screen.mousepressed(x, y, btn, presses)
+end
 
-function love.mousereleased(x, y, btn) screen.mousereleased(x, y, btn) end
+function love.mousereleased(x, y, btn)
+    screen.mousereleased(x, y, btn)
+end
 
-function love.mousemoved(x, y) screen.mousemoved(x, y) end
+function love.mousemoved(x, y)
+    screen.mousemoved(x, y)
+end
 
 function love.keypressed(key, scancode, isRepeat)
     if key == "f3" then
@@ -178,7 +192,6 @@ function love.keypressed(key, scancode, isRepeat)
         if profilerEnabled then
             profiler.start()
             profilerFrame = 0
-            profilerReport = "Collecting data..."
         else
             profiler.stop()
             profiler.reset()
@@ -188,6 +201,10 @@ function love.keypressed(key, scancode, isRepeat)
     screen.keypressed(key, scancode, isRepeat)
 end
 
-function love.textinput(text) screen.textinput(text) end
+function love.textinput(text)
+    screen.textinput(text)
+end
 
-function love.wheelmoved(x, y) screen.wheelmoved(x, y) end
+function love.wheelmoved(x, y)
+    screen.wheelmoved(x, y)
+end

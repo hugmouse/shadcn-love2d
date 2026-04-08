@@ -14,7 +14,9 @@ local statusLabels = {
 }
 
 local priorityLabels = {
-    low = "Low", medium = "Medium", high = "High",
+    low = "Low",
+    medium = "Medium",
+    high = "High",
 }
 
 function Dialog.new()
@@ -38,7 +40,9 @@ function Dialog:close()
 end
 
 function Dialog:draw()
-    if not self.visible or not self.task then return end
+    if not self.visible or not self.task then
+        return
+    end
 
     local sw, sh = theme.screenW, theme.screenH
     local task = self.task
@@ -66,8 +70,7 @@ function Dialog:draw()
 
     -- Card border
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2,
-        theme.radii.card, theme.radii.card)
+    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2, theme.radii.card, theme.radii.card)
 
     -- Card face
     love.graphics.setColor(theme.colors.background)
@@ -104,7 +107,8 @@ function Dialog:draw()
     love.graphics.setFont(bodyFont)
     love.graphics.setColor(theme.colors.muted)
     local statusText = (statusLabels[task.status] or task.status)
-        .. "  /  " .. (priorityLabels[task.priority] or task.priority)
+        .. "  /  "
+        .. (priorityLabels[task.priority] or task.priority)
     love.graphics.print(statusText, x + padding, metaY)
 
     -- Description
@@ -114,8 +118,12 @@ function Dialog:draw()
 end
 
 function Dialog:mousepressed(mx, my, button)
-    if not self.visible then return false end
-    if button ~= 1 then return false end
+    if not self.visible then
+        return false
+    end
+    if button ~= 1 then
+        return false
+    end
 
     -- Close button
     if self._closeRect then
@@ -139,7 +147,9 @@ function Dialog:mousepressed(mx, my, button)
 end
 
 function Dialog:keypressed(key)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     if key == "escape" then
         self:close()
         return true

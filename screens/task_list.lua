@@ -38,17 +38,17 @@ local function countByField(field)
 end
 
 local statusOptions = {
-    { value = "backlog",     label = "Backlog",     icon = "question-circle" },
-    { value = "todo",        label = "Todo",        icon = "circle" },
+    { value = "backlog", label = "Backlog", icon = "question-circle" },
+    { value = "todo", label = "Todo", icon = "circle" },
     { value = "in_progress", label = "In Progress", icon = "timer" },
-    { value = "done",        label = "Done",        icon = "check-circle" },
-    { value = "canceled",    label = "Canceled",    icon = "circle-slash" },
+    { value = "done", label = "Done", icon = "check-circle" },
+    { value = "canceled", label = "Canceled", icon = "circle-slash" },
 }
 
 local priorityOptions = {
-    { value = "low",    label = "Low",    icon = "arrow-down" },
+    { value = "low", label = "Low", icon = "arrow-down" },
     { value = "medium", label = "Medium", icon = "arrow-right" },
-    { value = "high",   label = "High",   icon = "arrow-up" },
+    { value = "high", label = "High", icon = "arrow-up" },
 }
 
 local function refreshOptionCounts()
@@ -74,9 +74,13 @@ local function applyFilters()
     for _, task in ipairs(Store.getTasks()) do
         local pass = true
         if hasTextFilter then
-            if not (task.title:lower():find(lower, 1, true)
+            if
+                not (
+                    task.title:lower():find(lower, 1, true)
                     or task.id:lower():find(lower, 1, true)
-                    or task.label:lower():find(lower, 1, true)) then
+                    or task.label:lower():find(lower, 1, true)
+                )
+            then
                 pass = false
             end
         end
@@ -134,10 +138,18 @@ local function applyPage()
 end
 
 local function closeAllPopups()
-    if statusDropdown then statusDropdown:close() end
-    if priorityDropdown then priorityDropdown:close() end
-    if contextMenu then contextMenu:close() end
-    if headerMenu then headerMenu:close() end
+    if statusDropdown then
+        statusDropdown:close()
+    end
+    if priorityDropdown then
+        priorityDropdown:close()
+    end
+    if contextMenu then
+        contextMenu:close()
+    end
+    if headerMenu then
+        headerMenu:close()
+    end
 end
 
 local function refreshAll()
@@ -163,7 +175,9 @@ function screen.load()
         options = statusOptions,
         width = 200,
         onSelect = function()
-            if pagination then pagination.page = 1 end
+            if pagination then
+                pagination.page = 1
+            end
             applyFilters()
         end,
     })
@@ -172,7 +186,9 @@ function screen.load()
         options = priorityOptions,
         width = 200,
         onSelect = function()
-            if pagination then pagination.page = 1 end
+            if pagination then
+                pagination.page = 1
+            end
             applyFilters()
         end,
     })
@@ -185,16 +201,16 @@ function screen.load()
                 action = function(task)
                     closeAllPopups()
                     taskForm:openForEdit(task)
-                end
+                end,
             },
             {
                 label = "Make a copy",
                 action = function(task)
                     Store.copyTask(task.id)
                     refreshAll()
-                end
+                end,
             },
-            { label = "Favorite", action = function(task) end },
+            { label = "Favorite", action = function() end },
             { type = "separator" },
             {
                 label = "Delete",
@@ -203,7 +219,7 @@ function screen.load()
                     deleteTargetId = task.id
                     confirmDialog:open()
                 end,
-                variant = "destructive"
+                variant = "destructive",
             },
         },
         width = 160,
@@ -214,7 +230,9 @@ function screen.load()
         sortDirection = dir
         dataTable.sortColumn = col
         dataTable.sortDirection = dir
-        if pagination then pagination.page = 1 end
+        if pagination then
+            pagination.page = 1
+        end
         applyFilters()
     end
 
@@ -225,17 +243,17 @@ function screen.load()
                 icon = "arrow-up",
                 action = function()
                     setSortAndApply(headerMenu._colId, "asc")
-                end
+                end,
             },
             {
                 label = "Desc",
                 icon = "arrow-down",
                 action = function()
                     setSortAndApply(headerMenu._colId, "desc")
-                end
+                end,
             },
             { type = "separator" },
-            { label = "Hide",    icon = "eye-off", action = function() end },
+            { label = "Hide", icon = "eye-off", action = function() end },
         },
         width = 150,
     })
@@ -293,7 +311,9 @@ function screen.load()
         h = 32,
         onChange = function(text)
             filterText = text
-            if pagination then pagination.page = 1 end
+            if pagination then
+                pagination.page = 1
+            end
             applyFilters()
         end,
     })
@@ -356,7 +376,7 @@ function screen.load()
         selectedCount = 0,
         rowsPerPageOptions = { 25, 50, 100 },
         defaultRowsPerPage = 25,
-        onPageChange = function(page, rowsPerPage)
+        onPageChange = function()
             applyPage()
         end,
     })
@@ -368,7 +388,9 @@ end
 function screen.update(dt)
     pagination:setSelectedCount(dataTable:getSelectedCount())
 
-    if confirmDialog:isVisible() then return end
+    if confirmDialog:isVisible() then
+        return
+    end
     if taskForm:isVisible() then
         taskForm:update(dt)
         return
@@ -385,17 +407,24 @@ end
 local function drawBackground()
     local padding = theme.spacing.padding
 
-    Layout.header("Welcome back!",
-        "Here's a list of your tasks.", padding, 32)
+    Layout.header("Welcome back!", "Here's a list of your tasks.", padding, 32)
 
     toolbar:draw()
     dataTable:draw()
     pagination:draw()
 
-    if statusDropdown:isVisible() then statusDropdown:draw() end
-    if priorityDropdown:isVisible() then priorityDropdown:draw() end
-    if contextMenu:isVisible() then contextMenu:draw() end
-    if headerMenu:isVisible() then headerMenu:draw() end
+    if statusDropdown:isVisible() then
+        statusDropdown:draw()
+    end
+    if priorityDropdown:isVisible() then
+        priorityDropdown:draw()
+    end
+    if contextMenu:isVisible() then
+        contextMenu:draw()
+    end
+    if headerMenu:isVisible() then
+        headerMenu:draw()
+    end
 
     pagination:drawOverlay()
 end
@@ -407,9 +436,7 @@ function screen.draw()
         if not bgCanvas then
             bgCanvas = love.graphics.newCanvas()
             love.graphics.setCanvas(bgCanvas)
-            love.graphics.clear(theme.colors.background[1],
-                theme.colors.background[2],
-                theme.colors.background[3], 1)
+            love.graphics.clear(theme.colors.background[1], theme.colors.background[2], theme.colors.background[3], 1)
             drawBackground()
             love.graphics.setCanvas()
         end
@@ -421,46 +448,90 @@ function screen.draw()
     end
 
     -- Modal overlays (topmost, always drawn)
-    if dialog.visible then dialog:draw() end
-    if taskForm:isVisible() then taskForm:draw() end
-    if confirmDialog:isVisible() then confirmDialog:draw() end
+    if dialog.visible then
+        dialog:draw()
+    end
+    if taskForm:isVisible() then
+        taskForm:draw()
+    end
+    if confirmDialog:isVisible() then
+        confirmDialog:draw()
+    end
 end
 
 function screen.mousepressed(x, y, button, pressCount)
-    if confirmDialog:mousepressed(x, y, button) then return end
-    if taskForm:mousepressed(x, y, button, pressCount) then return end
-    if dialog:mousepressed(x, y, button) then return end
+    if confirmDialog:mousepressed(x, y, button) then
+        return
+    end
+    if taskForm:mousepressed(x, y, button, pressCount) then
+        return
+    end
+    if dialog:mousepressed(x, y, button) then
+        return
+    end
 
     -- Popups get priority
-    if statusDropdown:mousepressed(x, y, button) then return end
-    if priorityDropdown:mousepressed(x, y, button) then return end
-    if contextMenu:mousepressed(x, y, button) then return end
-    if headerMenu:mousepressed(x, y, button) then return end
+    if statusDropdown:mousepressed(x, y, button) then
+        return
+    end
+    if priorityDropdown:mousepressed(x, y, button) then
+        return
+    end
+    if contextMenu:mousepressed(x, y, button) then
+        return
+    end
+    if headerMenu:mousepressed(x, y, button) then
+        return
+    end
 
     -- Focus management: blur input if click lands outside it
     if filterInput:isFocused() then
-        local hitInput = (x >= filterInput.x and x <= filterInput.x + filterInput.w
-            and y >= filterInput.y and y <= filterInput.y + filterInput.h)
+        local hitInput = (
+            x >= filterInput.x
+            and x <= filterInput.x + filterInput.w
+            and y >= filterInput.y
+            and y <= filterInput.y + filterInput.h
+        )
         if not hitInput then
             filterInput:blur()
         end
     end
 
     toolbar:mousepressed(x, y, button, pressCount)
-    if pagination:mousepressed(x, y, button) then return end
+    if pagination:mousepressed(x, y, button) then
+        return
+    end
     dataTable:mousepressed(x, y, button)
 end
 
-function screen.keypressed(key, scancode, isRepeat)
-    if confirmDialog:keypressed(key) then return end
-    if taskForm:keypressed(key, isRepeat) then return end
-    if dialog:keypressed(key) then return end
-    if statusDropdown:keypressed(key) then return end
-    if priorityDropdown:keypressed(key) then return end
-    if contextMenu:keypressed(key) then return end
-    if headerMenu:keypressed(key) then return end
-    if pagination:keypressed(key) then return end
-    if toolbar:keypressed(key, isRepeat) then return end
+function screen.keypressed(key, _scancode, isRepeat)
+    if confirmDialog:keypressed(key) then
+        return
+    end
+    if taskForm:keypressed(key, isRepeat) then
+        return
+    end
+    if dialog:keypressed(key) then
+        return
+    end
+    if statusDropdown:keypressed(key) then
+        return
+    end
+    if priorityDropdown:keypressed(key) then
+        return
+    end
+    if contextMenu:keypressed(key) then
+        return
+    end
+    if headerMenu:keypressed(key) then
+        return
+    end
+    if pagination:keypressed(key) then
+        return
+    end
+    if toolbar:keypressed(key, isRepeat) then
+        return
+    end
 end
 
 function screen.resize(w, h)
@@ -470,8 +541,11 @@ function screen.resize(w, h)
     local padding = theme.spacing.padding
     local tableW = screenW - padding * 2
     local tableH = screenH - 64 - 140
+    dataTable.x = padding
     dataTable:resize(tableW, tableH)
+    toolbar.x = padding
     toolbar:resize(tableW)
+    pagination.x = padding
     pagination.y = screenH - 48
     pagination.w = tableW
 end
@@ -483,21 +557,35 @@ function screen.wheelmoved(x, y)
 end
 
 function screen.textinput(text)
-    if confirmDialog:isVisible() then return end
-    if taskForm:textinput(text) then return end
-    if dialog.visible then return end
-    if statusDropdown:textinput(text) then return end
-    if priorityDropdown:textinput(text) then return end
+    if confirmDialog:isVisible() then
+        return
+    end
+    if taskForm:textinput(text) then
+        return
+    end
+    if dialog.visible then
+        return
+    end
+    if statusDropdown:textinput(text) then
+        return
+    end
+    if priorityDropdown:textinput(text) then
+        return
+    end
     toolbar:textinput(text)
 end
 
 function screen.mousemoved(x, y)
-    if confirmDialog:isVisible() then return end
+    if confirmDialog:isVisible() then
+        return
+    end
     if taskForm:isVisible() then
         taskForm:mousemoved(x, y)
         return
     end
-    if dialog.visible then return end
+    if dialog.visible then
+        return
+    end
     statusDropdown:mousemoved(x, y)
     priorityDropdown:mousemoved(x, y)
     contextMenu:mousemoved(x, y)
@@ -507,12 +595,16 @@ function screen.mousemoved(x, y)
 end
 
 function screen.mousereleased(x, y, button)
-    if confirmDialog:isVisible() then return end
+    if confirmDialog:isVisible() then
+        return
+    end
     if taskForm:isVisible() then
         taskForm:mousereleased(x, y, button)
         return
     end
-    if dialog.visible then return end
+    if dialog.visible then
+        return
+    end
     toolbar:mousereleased(x, y, button)
 end
 

@@ -40,10 +40,14 @@ end
 
 function Toolbar:update(dt)
     for _, item in ipairs(self.left) do
-        if item.update then item:update(dt) end
+        if item.update then
+            item:update(dt)
+        end
     end
     for _, item in ipairs(self.right) do
-        if item.update then item:update(dt) end
+        if item.update then
+            item:update(dt)
+        end
     end
 end
 
@@ -72,38 +76,54 @@ end
 
 function Toolbar:mousemoved(mx, my)
     for _, item in ipairs(self.left) do
-        if item.mousemoved then item:mousemoved(mx, my) end
+        if item.mousemoved then
+            item:mousemoved(mx, my)
+        end
     end
     for _, item in ipairs(self.right) do
-        if item.mousemoved then item:mousemoved(mx, my) end
+        if item.mousemoved then
+            item:mousemoved(mx, my)
+        end
     end
 end
 
 function Toolbar:mousereleased(mx, my, button)
     for _, item in ipairs(self.left) do
-        if item.mousereleased then item:mousereleased(mx, my, button) end
+        if item.mousereleased then
+            item:mousereleased(mx, my, button)
+        end
     end
     for _, item in ipairs(self.right) do
-        if item.mousereleased then item:mousereleased(mx, my, button) end
+        if item.mousereleased then
+            item:mousereleased(mx, my, button)
+        end
     end
 end
 
 function Toolbar:textinput(text)
     for _, item in ipairs(self.left) do
-        if item.textinput and item:textinput(text) then return true end
+        if item.textinput and item:textinput(text) then
+            return true
+        end
     end
     for _, item in ipairs(self.right) do
-        if item.textinput and item:textinput(text) then return true end
+        if item.textinput and item:textinput(text) then
+            return true
+        end
     end
     return false
 end
 
 function Toolbar:keypressed(key, isRepeat)
     for _, item in ipairs(self.left) do
-        if item.keypressed and item:keypressed(key, isRepeat) then return true end
+        if item.keypressed and item:keypressed(key, isRepeat) then
+            return true
+        end
     end
     for _, item in ipairs(self.right) do
-        if item.keypressed and item:keypressed(key, isRepeat) then return true end
+        if item.keypressed and item:keypressed(key, isRepeat) then
+            return true
+        end
     end
     return false
 end
