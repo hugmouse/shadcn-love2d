@@ -10,11 +10,11 @@ local DataTable = {}
 DataTable.__index = DataTable
 
 local statusIcons = {
-    backlog = "question-circle",
+    backlog = "circle-help",
     todo = "circle",
     in_progress = "timer",
-    done = "check-circle",
-    canceled = "circle-slash",
+    done = "circle-check",
+    canceled = "ban",
 }
 
 local statusLabels = {

@@ -38,11 +38,11 @@ local function countByField(field)
 end
 
 local statusOptions = {
-    { value = "backlog", label = "Backlog", icon = "question-circle" },
+    { value = "backlog", label = "Backlog", icon = "circle-help" },
     { value = "todo", label = "Todo", icon = "circle" },
     { value = "in_progress", label = "In Progress", icon = "timer" },
-    { value = "done", label = "Done", icon = "check-circle" },
-    { value = "canceled", label = "Canceled", icon = "circle-slash" },
+    { value = "done", label = "Done", icon = "circle-check" },
+    { value = "canceled", label = "Canceled", icon = "ban" },
 }
 
 local priorityOptions = {
@@ -320,7 +320,7 @@ function screen.load()
 
     statusButton = Button.new({
         text = "Status",
-        icon = "plus-circle",
+        icon = "circle-plus",
         variant = "outline",
         size = "sm",
         dashed = true,
@@ -336,7 +336,7 @@ function screen.load()
 
     priorityButton = Button.new({
         text = "Priority",
-        icon = "plus-circle",
+        icon = "circle-plus",
         variant = "outline",
         size = "sm",
         dashed = true,
