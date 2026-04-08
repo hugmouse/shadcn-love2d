@@ -1,7 +1,7 @@
 ---
-base: lua53
+base: lua51
 lua_versions:
-  - lua54
+  - luajit
 globals:
   love:
     any: true
