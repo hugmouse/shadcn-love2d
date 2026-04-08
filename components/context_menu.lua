@@ -51,14 +51,20 @@ function ContextMenu:_updateLayout()
     local sw, sh = theme.screenW, theme.screenH
     -- Anchor from right edge to prevent horizontal overflow
     local x = self.anchorX - self.width
-    if x + self.width > sw - 8 then x = sw - self.width - 8 end
-    if x < 8 then x = 8 end
+    if x + self.width > sw - 8 then
+        x = sw - self.width - 8
+    end
+    if x < 8 then
+        x = 8
+    end
     -- Flip upward if would overflow bottom
     local y = self.anchorY
     if y + h > sh - 8 then
         y = self.anchorY - h
     end
-    if y < 8 then y = 8 end
+    if y < 8 then
+        y = 8
+    end
 
     self.cx, self.cy, self.cw, self.ch = x, y, self.width, h
 
@@ -86,7 +92,9 @@ function ContextMenu:_itemAtY(my)
 end
 
 function ContextMenu:draw()
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local cx, cy, cw, ch = self.cx, self.cy, self.cw, self.ch
     local r = theme.radii.card
@@ -106,8 +114,15 @@ function ContextMenu:draw()
         local item = self.items[i]
         if item and item.type ~= "separator" then
             love.graphics.setColor(theme.colors.hover)
-            love.graphics.rectangle("fill", cx + self.padding, self.itemY[i],
-                cw - self.padding * 2, self.itemH, 4, 4)
+            love.graphics.rectangle(
+                "fill",
+                cx + self.padding,
+                self.itemY[i],
+                cw - self.padding * 2,
+                self.itemH,
+                4,
+                4
+            )
         end
     end
 
@@ -124,7 +139,13 @@ function ContextMenu:draw()
     for i, item in ipairs(self.items) do
         if item.type ~= "separator" and item.icon then
             local labelX = cx + self.padding + 8
-            Icon.draw(item.icon, labelX, self.itemY[i] + (self.itemH - 16) / 2, 16, theme.colors.muted)
+            Icon.draw(
+                item.icon,
+                labelX,
+                self.itemY[i] + (self.itemH - 16) / 2,
+                16,
+                theme.colors.muted
+            )
         end
     end
 
@@ -134,8 +155,14 @@ function ContextMenu:draw()
     for i, item in ipairs(self.items) do
         if item.type ~= "separator" and item.variant ~= "destructive" then
             local labelX = cx + self.padding + 8
-            if item.icon then labelX = labelX + 22 end
-            love.graphics.print(item.label, labelX, self.itemY[i] + (self.itemH - theme.fontH.body) / 2)
+            if item.icon then
+                labelX = labelX + 22
+            end
+            love.graphics.print(
+                item.label,
+                labelX,
+                self.itemY[i] + (self.itemH - theme.fontH.body) / 2
+            )
         end
     end
 
@@ -144,15 +171,25 @@ function ContextMenu:draw()
     for i, item in ipairs(self.items) do
         if item.type ~= "separator" and item.variant == "destructive" then
             local labelX = cx + self.padding + 8
-            if item.icon then labelX = labelX + 22 end
-            love.graphics.print(item.label, labelX, self.itemY[i] + (self.itemH - theme.fontH.body) / 2)
+            if item.icon then
+                labelX = labelX + 22
+            end
+            love.graphics.print(
+                item.label,
+                labelX,
+                self.itemY[i] + (self.itemH - theme.fontH.body) / 2
+            )
         end
     end
 end
 
 function ContextMenu:mousepressed(mx, my, btn)
-    if not self.visible then return false end
-    if btn ~= 1 then return false end
+    if not self.visible then
+        return false
+    end
+    if btn ~= 1 then
+        return false
+    end
 
     local cx, cy, cw, ch = self.cx, self.cy, self.cw, self.ch
 
@@ -176,7 +213,9 @@ function ContextMenu:mousepressed(mx, my, btn)
 end
 
 function ContextMenu:mousemoved(mx, my)
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local cx, cy, cw, ch = self.cx, self.cy, self.cw, self.ch
     if mx >= cx and mx <= cx + cw and my >= cy and my <= cy + ch then
@@ -192,7 +231,9 @@ function ContextMenu:mousemoved(mx, my)
 end
 
 function ContextMenu:keypressed(key)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     if key == "escape" then
         self:close()
         return true

@@ -1,0 +1,13 @@
+std = "repo-love2d+repo-batteries"
+exclude = [
+    "build/**",
+    "lib/**",
+    "meta/**",
+    "web_build/**",
+]
+
+[lints]
+multiple_statements = "allow"
+undefined_variable = "deny"
+unscoped_variables = "deny"
+incorrect_standard_library_use = "deny"

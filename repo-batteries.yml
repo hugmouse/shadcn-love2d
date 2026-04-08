@@ -1,0 +1,14 @@
+---
+globals:
+  table.insertion_sort:
+    args:
+      - type: table
+      - type: function
+  table.stable_sort:
+    args:
+      - type: table
+      - type: function
+  table.unstable_sort:
+    args:
+      - type: table
+      - type: function

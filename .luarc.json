@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "LuaJIT",
+  "runtime.path": [
+    "?.lua",
+    "?/init.lua"
+  ],
+  "runtime.pathStrict": true,
+  "runtime.special": {
+    "love.filesystem.load": "loadfile"
+  },
+  "workspace.library": [
+    "meta",
+    "${3rd}/love2d/library",
+    "${3rd}/busted/library"
+  ],
+  "workspace.checkThirdParty": "Disable",
+  "workspace.ignoreDir": [
+    "build/**",
+    "web_build/**",
+    "lib/**"
+  ],
+  "workspace.useGitIgnore": true,
+  "diagnostics.globals": [
+    "love"
+  ],
+  "diagnostics.disable": [
+    "inject-field"
+  ],
+  "diagnostics.ignoredFiles": "Disable",
+  "diagnostics.libraryFiles": "Disable",
+  "format.enable": false,
+  "hint.enable": false
+}

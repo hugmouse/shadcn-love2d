@@ -26,9 +26,12 @@ function Checkbox:draw()
         lg.setColor(theme.colors.background)
         lg.setLineWidth(2)
         lg.line(
-            self.x + 3, self.y + s / 2,
-            self.x + 6, self.y + s / 2 + 3,
-            self.x + s - 3, self.y + s / 2 - 3
+            self.x + 3,
+            self.y + s / 2,
+            self.x + 6,
+            self.y + s / 2 + 3,
+            self.x + s - 3,
+            self.y + s / 2 - 3
         )
         lg.setLineWidth(prevLineWidth)
     else
@@ -40,8 +43,7 @@ function Checkbox:draw()
 end
 
 function Checkbox:hitTest(mx, my)
-    return mx >= self.x and mx <= self.x + self.size
-        and my >= self.y and my <= self.y + self.size
+    return mx >= self.x and mx <= self.x + self.size and my >= self.y and my <= self.y + self.size
 end
 
 function Checkbox:mousepressed(mx, my, button)

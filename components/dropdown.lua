@@ -83,7 +83,9 @@ function Dropdown:update()
 end
 
 function Dropdown:draw()
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local opts = self:_visibleOptions()
     local cx, cy, cw, ch = self:_cardRect(opts)
@@ -106,10 +108,18 @@ function Dropdown:draw()
     love.graphics.setFont(font)
     if self.searchText == "" then
         love.graphics.setColor(theme.colors.muted)
-        love.graphics.print("Search...", cx + 30, searchY + (self.searchRowH - theme.fontH.body) / 2)
+        love.graphics.print(
+            "Search...",
+            cx + 30,
+            searchY + (self.searchRowH - theme.fontH.body) / 2
+        )
     else
         love.graphics.setColor(theme.colors.foreground)
-        love.graphics.print(self.searchText, cx + 30, searchY + (self.searchRowH - theme.fontH.body) / 2)
+        love.graphics.print(
+            self.searchText,
+            cx + 30,
+            searchY + (self.searchRowH - theme.fontH.body) / 2
+        )
     end
 
     -- Separator below search
@@ -136,9 +146,14 @@ function Dropdown:draw()
             love.graphics.rectangle("fill", ix, cbY, cbSize, cbSize, 3, 3)
             love.graphics.setColor(theme.colors.background)
             love.graphics.setLineWidth(2)
-            love.graphics.line(ix + 3, cbY + cbSize / 2,
-                ix + 6, cbY + cbSize / 2 + 3,
-                ix + cbSize - 3, cbY + cbSize / 2 - 3)
+            love.graphics.line(
+                ix + 3,
+                cbY + cbSize / 2,
+                ix + 6,
+                cbY + cbSize / 2 + 3,
+                ix + cbSize - 3,
+                cbY + cbSize / 2 - 3
+            )
             love.graphics.setLineWidth(1)
         else
             love.graphics.setColor(theme.colors.border)
@@ -165,15 +180,22 @@ function Dropdown:draw()
             love.graphics.setColor(theme.colors.muted)
             local countStr = tostring(opt.count)
             local countW = theme.textWidth(smallFont, countStr)
-            love.graphics.print(countStr, cx + cw - 12 - countW,
-                oy + (self.optionH - theme.fontH.small) / 2)
+            love.graphics.print(
+                countStr,
+                cx + cw - 12 - countW,
+                oy + (self.optionH - theme.fontH.small) / 2
+            )
         end
     end
 end
 
 function Dropdown:mousepressed(mx, my, btn)
-    if not self.visible then return false end
-    if btn ~= 1 then return false end
+    if not self.visible then
+        return false
+    end
+    if btn ~= 1 then
+        return false
+    end
 
     local opts = self:_visibleOptions()
     local cx, cy, cw, ch = self:_cardRect(opts)
@@ -205,7 +227,9 @@ function Dropdown:mousepressed(mx, my, btn)
 end
 
 function Dropdown:mousemoved(mx, my)
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local opts = self:_visibleOptions()
     local cx, cy, cw, ch = self:_cardRect(opts)
@@ -224,7 +248,9 @@ function Dropdown:mousemoved(mx, my)
 end
 
 function Dropdown:keypressed(key)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     if key == "escape" then
         self:close()
         return true
@@ -239,7 +265,9 @@ function Dropdown:keypressed(key)
 end
 
 function Dropdown:textinput(text)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     self.searchText = self.searchText .. text
     return true
 end

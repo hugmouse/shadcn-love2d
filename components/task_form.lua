@@ -7,23 +7,23 @@ local TaskForm = {}
 TaskForm.__index = TaskForm
 
 local labelOptions = {
-    { value = "Bug",           label = "Bug" },
-    { value = "Feature",       label = "Feature" },
+    { value = "Bug", label = "Bug" },
+    { value = "Feature", label = "Feature" },
     { value = "Documentation", label = "Documentation" },
 }
 
 local statusOptions = {
-    { value = "backlog",     label = "Backlog" },
-    { value = "todo",        label = "Todo" },
+    { value = "backlog", label = "Backlog" },
+    { value = "todo", label = "Todo" },
     { value = "in_progress", label = "In Progress" },
-    { value = "done",        label = "Done" },
-    { value = "canceled",    label = "Canceled" },
+    { value = "done", label = "Done" },
+    { value = "canceled", label = "Canceled" },
 }
 
 local priorityOptions = {
-    { value = "low",    label = "Low" },
+    { value = "low", label = "Low" },
     { value = "medium", label = "Medium" },
-    { value = "high",   label = "High" },
+    { value = "high", label = "High" },
 }
 
 function TaskForm.new(params)
@@ -36,10 +36,14 @@ function TaskForm.new(params)
     self.width = 500
 
     self.titleInput = Input.new({ placeholder = "Task title...", w = 452, h = 32 })
-    self.descInput = Input.new({ placeholder = "Description...", w = 452, h = 80, multiline = true })
-    self.labelSelect = Select.new({ options = labelOptions, placeholder = "Label", w = 452, h = 32 })
-    self.statusSelect = Select.new({ options = statusOptions, placeholder = "Status", w = 452, h = 32 })
-    self.prioritySelect = Select.new({ options = priorityOptions, placeholder = "Priority", w = 452, h = 32 })
+    self.descInput =
+        Input.new({ placeholder = "Description...", w = 452, h = 80, multiline = true })
+    self.labelSelect =
+        Select.new({ options = labelOptions, placeholder = "Label", w = 452, h = 32 })
+    self.statusSelect =
+        Select.new({ options = statusOptions, placeholder = "Status", w = 452, h = 32 })
+    self.prioritySelect =
+        Select.new({ options = priorityOptions, placeholder = "Priority", w = 452, h = 32 })
 
     self._cardRect = nil
     return self
@@ -95,7 +99,6 @@ function TaskForm:_layoutFields(x, y, w)
     local fieldX = x + padding
     local fieldW = w - padding * 2
     local gap = 12
-    local font = theme.fonts.body
     local labelH = theme.fontH.body + 4
     local fieldH = 32
 
@@ -105,16 +108,23 @@ function TaskForm:_layoutFields(x, y, w)
     self.statusSelect.w = fieldW
     self.prioritySelect.w = fieldW
 
-    local headingFont = theme.fonts.heading
     local headerH = theme.fontH.heading + theme.fontH.body + 8
 
     -- Calculate fixed overhead (everything except description height)
     -- header + titleLabel + titleInput + descLabel + 3*(selectLabel+select) + gaps + footer + padding
-    local fixedH = padding + headerH + 16
-        + labelH + self.titleInput.h + gap -- title
-        + labelH + gap                     -- desc label (desc height added separately)
-        + (labelH + fieldH + gap) * 3      -- 3 selects
-        - gap + 24 + 36 + padding          -- last gap replaced with 24 + footer + bottom padding
+    local fixedH = padding
+        + headerH
+        + 16
+        + labelH
+        + self.titleInput.h
+        + gap -- title
+        + labelH
+        + gap -- desc label (desc height added separately)
+        + (labelH + fieldH + gap) * 3 -- 3 selects
+        - gap
+        + 24
+        + 36
+        + padding -- last gap replaced with 24 + footer + bottom padding
 
     -- Clamp description height so form fits in screen with 32px margin
     local sh = theme.screenH
@@ -161,7 +171,9 @@ function TaskForm:_layoutFields(x, y, w)
 end
 
 function TaskForm:draw()
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local sw, sh = theme.screenW, theme.screenH
     local padding = 24
@@ -180,8 +192,7 @@ function TaskForm:draw()
 
     -- Card border
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2,
-        theme.radii.card, theme.radii.card)
+    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2, theme.radii.card, theme.radii.card)
 
     -- Card face
     love.graphics.setColor(theme.colors.background)
@@ -197,8 +208,7 @@ function TaskForm:draw()
 
     love.graphics.setFont(font)
     love.graphics.setColor(theme.colors.muted)
-    local subtitle = self.mode == "create"
-        and "Fill in the details for your new task."
+    local subtitle = self.mode == "create" and "Fill in the details for your new task."
         or "Update the task details below."
     love.graphics.print(subtitle, x + padding, y + padding + theme.fontH.heading + 4)
 
@@ -228,32 +238,57 @@ function TaskForm:draw()
         x = x + w - padding - saveW - 8 - cancelW,
         y = self._footerY,
         w = cancelW,
-        h = btnH
+        h = btnH,
     }
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("line", self._cancelRect.x, self._cancelRect.y,
-        self._cancelRect.w, self._cancelRect.h, theme.radii.button, theme.radii.button)
+    love.graphics.rectangle(
+        "line",
+        self._cancelRect.x,
+        self._cancelRect.y,
+        self._cancelRect.w,
+        self._cancelRect.h,
+        theme.radii.button,
+        theme.radii.button
+    )
     love.graphics.setColor(theme.colors.foreground)
-    love.graphics.print("Cancel",
+    love.graphics.print(
+        "Cancel",
         self._cancelRect.x + (self._cancelRect.w - theme.textWidth(font, "Cancel")) / 2,
-        self._cancelRect.y + (self._cancelRect.h - theme.fontH.body) / 2)
+        self._cancelRect.y + (self._cancelRect.h - theme.fontH.body) / 2
+    )
 
     self._saveRect = {
         x = x + w - padding - saveW,
         y = self._footerY,
         w = saveW,
-        h = btnH
+        h = btnH,
     }
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("fill", self._saveRect.x - 1, self._saveRect.y - 1,
-        self._saveRect.w + 2, self._saveRect.h + 2, theme.radii.button, theme.radii.button)
+    love.graphics.rectangle(
+        "fill",
+        self._saveRect.x - 1,
+        self._saveRect.y - 1,
+        self._saveRect.w + 2,
+        self._saveRect.h + 2,
+        theme.radii.button,
+        theme.radii.button
+    )
     love.graphics.setColor(theme.colors.surface)
-    love.graphics.rectangle("fill", self._saveRect.x, self._saveRect.y,
-        self._saveRect.w, self._saveRect.h, theme.radii.button, theme.radii.button)
+    love.graphics.rectangle(
+        "fill",
+        self._saveRect.x,
+        self._saveRect.y,
+        self._saveRect.w,
+        self._saveRect.h,
+        theme.radii.button,
+        theme.radii.button
+    )
     love.graphics.setColor(theme.colors.background)
-    love.graphics.print(saveLabel,
+    love.graphics.print(
+        saveLabel,
         self._saveRect.x + (self._saveRect.w - theme.textWidth(font, saveLabel)) / 2,
-        self._saveRect.y + (self._saveRect.h - theme.fontH.body) / 2)
+        self._saveRect.y + (self._saveRect.h - theme.fontH.body) / 2
+    )
 
     -- Draw select overlays on top of everything (z-index fix)
     self.labelSelect:drawOverlay()
@@ -262,14 +297,20 @@ function TaskForm:draw()
 end
 
 function TaskForm:update(dt)
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
     self.titleInput:update(dt)
     self.descInput:update(dt)
 end
 
 function TaskForm:mousepressed(mx, my, btn, pressCount)
-    if not self.visible then return false end
-    if btn ~= 1 then return false end
+    if not self.visible then
+        return false
+    end
+    if btn ~= 1 then
+        return false
+    end
 
     -- Save button
     if self._saveRect then
@@ -297,7 +338,9 @@ function TaskForm:mousepressed(mx, my, btn, pressCount)
     if self._cancelRect then
         local r = self._cancelRect
         if mx >= r.x and mx <= r.x + r.w and my >= r.y and my <= r.y + r.h then
-            if self.onCancel then self.onCancel() end
+            if self.onCancel then
+                self.onCancel()
+            end
             self:close()
             return true
         end
@@ -314,13 +357,19 @@ function TaskForm:mousepressed(mx, my, btn, pressCount)
 
     -- Select dropdowns (check before inputs since they overlay)
     if self.prioritySelect:isOpen() then
-        if self.prioritySelect:mousepressed(mx, my, btn) then return true end
+        if self.prioritySelect:mousepressed(mx, my, btn) then
+            return true
+        end
     end
     if self.statusSelect:isOpen() then
-        if self.statusSelect:mousepressed(mx, my, btn) then return true end
+        if self.statusSelect:mousepressed(mx, my, btn) then
+            return true
+        end
     end
     if self.labelSelect:isOpen() then
-        if self.labelSelect:mousepressed(mx, my, btn) then return true end
+        if self.labelSelect:mousepressed(mx, my, btn) then
+            return true
+        end
     end
 
     -- Close all selects when clicking elsewhere in the form
@@ -364,7 +413,9 @@ function TaskForm:mousepressed(mx, my, btn, pressCount)
 end
 
 function TaskForm:mousemoved(mx, my)
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
     self.titleInput:mousemoved(mx, my)
     self.descInput:mousemoved(mx, my)
     self.labelSelect:mousemoved(mx, my)
@@ -373,15 +424,23 @@ function TaskForm:mousemoved(mx, my)
 end
 
 function TaskForm:mousereleased(mx, my, btn)
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
     self.titleInput:mousereleased(mx, my, btn)
     self.descInput:mousereleased(mx, my, btn)
 end
 
 function TaskForm:keypressed(key, isRepeat)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     if key == "escape" then
-        if self.labelSelect:isOpen() or self.statusSelect:isOpen() or self.prioritySelect:isOpen() then
+        if
+            self.labelSelect:isOpen()
+            or self.statusSelect:isOpen()
+            or self.prioritySelect:isOpen()
+        then
             self.labelSelect.open = false
             self.statusSelect.open = false
             self.prioritySelect.open = false
@@ -390,18 +449,34 @@ function TaskForm:keypressed(key, isRepeat)
         self:close()
         return true
     end
-    if self.titleInput:keypressed(key, isRepeat) then return true end
-    if self.descInput:keypressed(key, isRepeat) then return true end
-    if self.labelSelect:keypressed(key) then return true end
-    if self.statusSelect:keypressed(key) then return true end
-    if self.prioritySelect:keypressed(key) then return true end
+    if self.titleInput:keypressed(key, isRepeat) then
+        return true
+    end
+    if self.descInput:keypressed(key, isRepeat) then
+        return true
+    end
+    if self.labelSelect:keypressed(key) then
+        return true
+    end
+    if self.statusSelect:keypressed(key) then
+        return true
+    end
+    if self.prioritySelect:keypressed(key) then
+        return true
+    end
     return true
 end
 
 function TaskForm:textinput(text)
-    if not self.visible then return false end
-    if self.titleInput:textinput(text) then return true end
-    if self.descInput:textinput(text) then return true end
+    if not self.visible then
+        return false
+    end
+    if self.titleInput:textinput(text) then
+        return true
+    end
+    if self.descInput:textinput(text) then
+        return true
+    end
     return true
 end
 

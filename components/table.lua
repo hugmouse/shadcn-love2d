@@ -1,6 +1,5 @@
 local theme = require("theme")
 local Icon = require("components.icon")
-local Badge = require("components.badge")
 local Checkbox = require("components.checkbox")
 local love = require("love")
 
@@ -11,31 +10,31 @@ local DataTable = {}
 DataTable.__index = DataTable
 
 local statusIcons = {
-    backlog     = "question-circle",
-    todo        = "circle",
+    backlog = "circle-help",
+    todo = "circle",
     in_progress = "timer",
-    done        = "check-circle",
-    canceled    = "circle-slash",
+    done = "circle-check",
+    canceled = "ban",
 }
 
 local statusLabels = {
-    backlog     = "Backlog",
-    todo        = "Todo",
+    backlog = "Backlog",
+    todo = "Todo",
     in_progress = "In Progress",
-    done        = "Done",
-    canceled    = "Canceled",
+    done = "Done",
+    canceled = "Canceled",
 }
 
 local priorityIcons = {
-    low    = "arrow-down",
+    low = "arrow-down",
     medium = "arrow-right",
-    high   = "arrow-up",
+    high = "arrow-up",
 }
 
 local priorityLabels = {
-    low    = "Low",
+    low = "Low",
     medium = "Medium",
-    high   = "High",
+    high = "High",
 }
 
 function DataTable.new(params)
@@ -54,17 +53,11 @@ function DataTable.new(params)
     self.headerHeight = 40
     self.hoveredRow = nil
     self.scrollY = 0
-    self.sortColumn = nil    -- "task" | "title" | "status" | "priority"
+    self.sortColumn = nil -- "task" | "title" | "status" | "priority"
     self.sortDirection = nil -- "asc" | "desc"
 
-    self.columns = {
-        { id = "checkbox", width = 40 },
-        { id = "task",     width = 90 },
-        { id = "title",    width = self.w - 410 },
-        { id = "status",   width = 130 },
-        { id = "priority", width = 110 },
-        { id = "actions",  width = 40 },
-    }
+    self.columns = {}
+    self:_calculateColumns()
 
     self.headerCheckbox = Checkbox.new({ x = 0, y = 0 })
     self.rowCheckboxes = {}
@@ -83,16 +76,32 @@ function DataTable.new(params)
     return self
 end
 
+function DataTable:_calculateColumns()
+    -- Adapt column widths to available space
+    local w = self.w
+    local compact = w < 500
+    local cbW = compact and 32 or 40
+    local taskW = compact and 60 or 90
+    local statusW = compact and 90 or 130
+    local priorityW = compact and 80 or 110
+    local actionsW = compact and 32 or 40
+    local fixedW = cbW + taskW + statusW + priorityW + actionsW
+    local titleW = max(60, w - fixedW)
+
+    self.columns = {
+        { id = "checkbox", width = cbW },
+        { id = "task", width = taskW },
+        { id = "title", width = titleW },
+        { id = "status", width = statusW },
+        { id = "priority", width = priorityW },
+        { id = "actions", width = actionsW },
+    }
+end
+
 function DataTable:resize(w, h)
     self.w = w
     self.h = h
-    -- Recalculate flexible title column
-    for _, col in ipairs(self.columns) do
-        if col.id == "title" then
-            col.width = self.w - 410
-        end
-    end
-    -- Invalidate title cache since column widths changed
+    self:_calculateColumns()
     self._titleCache = nil
     self:_initColPositions()
 end
@@ -129,17 +138,18 @@ end
 function DataTable:getSelectedCount()
     local count = 0
     for _, cb in ipairs(self.rowCheckboxes) do
-        if cb.checked then count = count + 1 end
+        if cb.checked then
+            count = count + 1
+        end
     end
     return count
 end
 
-function DataTable:update(dt)
+function DataTable:update(_dt)
     local mx, my = love.mouse.getPosition()
     local bodyY = self.y + self.headerHeight
 
-    if mx >= self.x and mx <= self.x + self.w
-        and my >= bodyY and my <= self.y + self.h then
+    if mx >= self.x and mx <= self.x + self.w and my >= bodyY and my <= self.y + self.h then
         local relY = my - bodyY + self.scrollY
         local row = floor(relY / self.rowHeight) + 1
         if row >= 1 and row <= #self.tasks then
@@ -157,8 +167,7 @@ function DataTable:draw()
     lg.setFont(font)
 
     lg.setColor(theme.colors.border)
-    lg.rectangle("line", self.x, self.y, self.w, self.h,
-        theme.radii.card, theme.radii.card)
+    lg.rectangle("line", self.x, self.y, self.w, self.h, theme.radii.card, theme.radii.card)
 
     self:_drawHeader(font)
 
@@ -167,13 +176,24 @@ function DataTable:draw()
     lg.setScissor(self.x, bodyY, self.w, bodyH)
 
     -- Collect visible rows
-    local visible = {}
+    self._visibleRows = self._visibleRows or {}
+    local visible = self._visibleRows
+    local vCount = 0
     local rh = self.rowHeight
     for i, task in ipairs(self.tasks) do
         local rowY = bodyY + (i - 1) * rh - self.scrollY
         if rowY + rh > bodyY and rowY < bodyY + bodyH then
-            visible[#visible + 1] = { i, task, rowY }
+            vCount = vCount + 1
+            if not visible[vCount] then
+                visible[vCount] = {}
+            end
+            visible[vCount][1] = i
+            visible[vCount][2] = task
+            visible[vCount][3] = rowY
         end
+    end
+    for i = vCount + 1, #visible do
+        visible[i] = nil
     end
 
     if #visible > 0 then
@@ -195,7 +215,9 @@ function DataTable:draw()
         local tableW = self.w
 
         -- Pass 1: All rectangle("fill") draws — batches into minimal GPU draw calls
-        if not self._ellipsisRects then self._ellipsisRects = {} end
+        if not self._ellipsisRects then
+            self._ellipsisRects = {}
+        end
         for _, row in ipairs(visible) do
             local idx, task, y = row[1], row[2], row[3]
             if self.hoveredRow == idx then
@@ -236,7 +258,9 @@ function DataTable:draw()
 
         -- Pass 2b: Body text (body font atlas)
         lg.setFont(font)
-        if not self._titleCache then self._titleCache = {} end
+        if not self._titleCache then
+            self._titleCache = {}
+        end
         local titleColW = self._titleColWidth
         for _, row in ipairs(visible) do
             local task, y = row[2], row[3]
@@ -246,7 +270,7 @@ function DataTable:draw()
             local bw = badgeFont:getWidth(task.label) + 16
             local titleX = cx.title + bw + 8
             local maxW = titleColW - bw - cellPad * 2 - 8
-            local cacheKey = task.id .. "_title"
+            local cacheKey = task.id .. "_title_" .. maxW
             if not self._titleCache[cacheKey] then
                 local title = task.title
                 if font:getWidth(title) > maxW then
@@ -282,9 +306,13 @@ function DataTable:draw()
                 lg.setLineWidth(prevLW)
             end
             local si = statusIcons[task.status]
-            if si then Icon.draw(si, cx.status, iconY, 16, colMuted) end
+            if si then
+                Icon.draw(si, cx.status, iconY, 16, colMuted)
+            end
             local pi = priorityIcons[task.priority]
-            if pi then Icon.draw(pi, cx.priority, iconY, 16, colMuted) end
+            if pi then
+                Icon.draw(pi, cx.priority, iconY, 16, colMuted)
+            end
             Icon.draw("ellipsis", cx.actions, iconY, 16, colMuted)
         end
     end
@@ -306,7 +334,7 @@ function DataTable:_drawHeader(font)
     local cbRad = theme.radii.checkbox
     local iconYOff = (h - 16) / 2
     local cellY = y + (h - theme.fontH.body) / 2
-    self._headerRects = {}
+    self._headerRects = self._headerRects or {}
 
     -- Pass 1: All fills (border + checkbox)
     lg.setColor(colBorder)
@@ -356,13 +384,17 @@ function DataTable:_drawHeader(font)
 end
 
 function DataTable:mousepressed(mx, my, button)
-    if button ~= 1 then return false end
+    if button ~= 1 then
+        return false
+    end
 
+    return self:_handleClick(mx, my)
+end
+function DataTable:_handleClick(mx, my)
     -- Header column click
     if self._headerRects then
         for colId, rect in pairs(self._headerRects) do
-            if mx >= rect.x and mx <= rect.x + rect.w
-                and my >= rect.y and my <= rect.y + rect.h then
+            if mx >= rect.x and mx <= rect.x + rect.w and my >= rect.y and my <= rect.y + rect.h then
                 if self.onHeaderClick then
                     self.onHeaderClick(colId, rect.x, rect.y + rect.h)
                 end
@@ -371,17 +403,17 @@ function DataTable:mousepressed(mx, my, button)
         end
     end
 
-    if self.headerCheckbox:mousepressed(mx, my, button) then
+    if self.headerCheckbox:mousepressed(mx, my, 1) then
         return true
     end
 
-    for i, cb in ipairs(self.rowCheckboxes) do
-        if cb:mousepressed(mx, my, button) then
+    for _, cb in ipairs(self.rowCheckboxes) do
+        if cb:mousepressed(mx, my, 1) then
             return true
         end
     end
 
-    -- Ellipsis click (takes priority over row click)
+    -- Ellipsis click
     if self.hoveredRow and self.onEllipsisClick and self._ellipsisRects then
         local er = self._ellipsisRects[self.hoveredRow]
         if er and mx >= er.x and mx <= er.x + er.w and my >= er.y and my <= er.y + er.h then
@@ -399,9 +431,8 @@ function DataTable:mousepressed(mx, my, button)
     return false
 end
 
-function DataTable:wheelmoved(x, y)
-    local maxScroll = max(0,
-        #self.tasks * self.rowHeight - (self.h - self.headerHeight))
+function DataTable:wheelmoved(_x, y)
+    local maxScroll = max(0, #self.tasks * self.rowHeight - (self.h - self.headerHeight))
     self.scrollY = max(0, min(maxScroll, self.scrollY - y * 30))
 end
 

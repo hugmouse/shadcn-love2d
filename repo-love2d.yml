@@ -1,0 +1,7 @@
+---
+base: lua51
+lua_versions:
+  - luajit
+globals:
+  love:
+    any: true

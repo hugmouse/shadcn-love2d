@@ -33,7 +33,9 @@ function Input.new(params)
 end
 
 function Input:_initField()
-    if self._fieldReady then return end
+    if self._fieldReady then
+        return
+    end
     self.field:setFont(theme.fonts.body)
     self.field:setWidth(self.w - self._padX * 2)
     if self.multiline then
@@ -78,8 +80,7 @@ function Input:_checkChanged()
 end
 
 function Input:_hitTest(mx, my)
-    return mx >= self.x and mx <= self.x + self.w
-        and my >= self.y and my <= self.y + self.h
+    return mx >= self.x and mx <= self.x + self.w and my >= self.y and my <= self.y + self.h
 end
 
 function Input:update(dt)
@@ -168,14 +169,19 @@ function Input:draw()
         for i = 0, 2 do
             local offset = i * 4
             love.graphics.line(
-                gx + self._resizeHandleSize - 2 - offset, gy + self._resizeHandleSize - 2,
-                gx + self._resizeHandleSize - 2, gy + self._resizeHandleSize - 2 - offset)
+                gx + self._resizeHandleSize - 2 - offset,
+                gy + self._resizeHandleSize - 2,
+                gx + self._resizeHandleSize - 2,
+                gy + self._resizeHandleSize - 2 - offset
+            )
         end
     end
 end
 
 function Input:keypressed(key, isRepeat)
-    if not self.focused then return false end
+    if not self.focused then
+        return false
+    end
     if key == "escape" then
         self:blur()
         return true
@@ -186,7 +192,9 @@ function Input:keypressed(key, isRepeat)
 end
 
 function Input:textinput(text)
-    if not self.focused then return false end
+    if not self.focused then
+        return false
+    end
     self.field:textinput(text)
     self:_checkChanged()
     return true
@@ -197,8 +205,12 @@ function Input:mousepressed(mx, my, btn, pressCount)
     if self.multiline and btn == 1 then
         local gx = self.x + self.w - self._resizeHandleSize
         local gy = self.y + self.h - self._resizeHandleSize
-        if mx >= gx and mx <= gx + self._resizeHandleSize
-            and my >= gy and my <= gy + self._resizeHandleSize then
+        if
+            mx >= gx
+            and mx <= gx + self._resizeHandleSize
+            and my >= gy
+            and my <= gy + self._resizeHandleSize
+        then
             self._resizing = true
             self._resizeStartY = my
             self._resizeStartH = self.h
@@ -206,7 +218,9 @@ function Input:mousepressed(mx, my, btn, pressCount)
         end
     end
 
-    if not self:_hitTest(mx, my) then return false end
+    if not self:_hitTest(mx, my) then
+        return false
+    end
     self:focus()
     local relX = mx - self.x - self._padX
     local textY = self.multiline and 6 or (self.h - theme.fontH.body) / 2
@@ -222,7 +236,9 @@ function Input:mousemoved(mx, my)
         self._fieldReady = false -- force re-init with new height
         return
     end
-    if not self.focused then return end
+    if not self.focused then
+        return
+    end
     local relX = mx - self.x - self._padX
     local textY = self.multiline and 6 or (self.h - theme.fontH.body) / 2
     local relY = my - self.y - textY
@@ -234,7 +250,9 @@ function Input:mousereleased(mx, my, btn)
         self._resizing = false
         return
     end
-    if not self.focused then return end
+    if not self.focused then
+        return
+    end
     local relX = mx - self.x - self._padX
     local textY = self.multiline and 6 or (self.h - theme.fontH.body) / 2
     local relY = my - self.y - textY

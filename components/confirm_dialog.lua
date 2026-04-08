@@ -32,7 +32,9 @@ function ConfirmDialog:isVisible()
 end
 
 function ConfirmDialog:draw()
-    if not self.visible then return end
+    if not self.visible then
+        return
+    end
 
     local sw, sh = theme.screenW, theme.screenH
     local padding = 24
@@ -57,8 +59,7 @@ function ConfirmDialog:draw()
 
     -- Card border
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2,
-        theme.radii.card, theme.radii.card)
+    love.graphics.rectangle("fill", x - 1, y - 1, w + 2, h + 2, theme.radii.card, theme.radii.card)
 
     -- Card face
     love.graphics.setColor(theme.colors.background)
@@ -88,45 +89,68 @@ function ConfirmDialog:draw()
         x = x + w - padding - confirmW - 8 - cancelW,
         y = footerY,
         w = cancelW,
-        h = footerH
+        h = footerH,
     }
     -- Outline style
     love.graphics.setColor(theme.colors.border)
-    love.graphics.rectangle("line", self._cancelRect.x, self._cancelRect.y,
-        self._cancelRect.w, self._cancelRect.h, theme.radii.button, theme.radii.button)
+    love.graphics.rectangle(
+        "line",
+        self._cancelRect.x,
+        self._cancelRect.y,
+        self._cancelRect.w,
+        self._cancelRect.h,
+        theme.radii.button,
+        theme.radii.button
+    )
     love.graphics.setFont(font)
     love.graphics.setColor(theme.colors.foreground)
-    love.graphics.print("Cancel",
+    love.graphics.print(
+        "Cancel",
         self._cancelRect.x + (self._cancelRect.w - theme.textWidth(font, "Cancel")) / 2,
-        self._cancelRect.y + (self._cancelRect.h - theme.fontH.body) / 2)
+        self._cancelRect.y + (self._cancelRect.h - theme.fontH.body) / 2
+    )
 
     -- Confirm (right-aligned, destructive red)
     self._confirmRect = {
         x = x + w - padding - confirmW,
         y = footerY,
         w = confirmW,
-        h = footerH
+        h = footerH,
     }
     love.graphics.setColor(0.9, 0.3, 0.3)
-    love.graphics.rectangle("fill", self._confirmRect.x, self._confirmRect.y,
-        self._confirmRect.w, self._confirmRect.h,
-        theme.radii.button, theme.radii.button)
+    love.graphics.rectangle(
+        "fill",
+        self._confirmRect.x,
+        self._confirmRect.y,
+        self._confirmRect.w,
+        self._confirmRect.h,
+        theme.radii.button,
+        theme.radii.button
+    )
     love.graphics.setFont(font)
     love.graphics.setColor(theme.colors.foreground)
-    love.graphics.print(self.confirmLabel,
+    love.graphics.print(
+        self.confirmLabel,
         self._confirmRect.x + (self._confirmRect.w - theme.textWidth(font, self.confirmLabel)) / 2,
-        self._confirmRect.y + (self._confirmRect.h - theme.fontH.body) / 2)
+        self._confirmRect.y + (self._confirmRect.h - theme.fontH.body) / 2
+    )
 end
 
 function ConfirmDialog:mousepressed(mx, my, btn)
-    if not self.visible then return false end
-    if btn ~= 1 then return false end
+    if not self.visible then
+        return false
+    end
+    if btn ~= 1 then
+        return false
+    end
 
     -- Confirm button
     if self._confirmRect then
         local r = self._confirmRect
         if mx >= r.x and mx <= r.x + r.w and my >= r.y and my <= r.y + r.h then
-            if self.onConfirm then self.onConfirm() end
+            if self.onConfirm then
+                self.onConfirm()
+            end
             self:close()
             return true
         end
@@ -136,7 +160,9 @@ function ConfirmDialog:mousepressed(mx, my, btn)
     if self._cancelRect then
         local r = self._cancelRect
         if mx >= r.x and mx <= r.x + r.w and my >= r.y and my <= r.y + r.h then
-            if self.onCancel then self.onCancel() end
+            if self.onCancel then
+                self.onCancel()
+            end
             self:close()
             return true
         end
@@ -146,7 +172,9 @@ function ConfirmDialog:mousepressed(mx, my, btn)
     if self._cardRect then
         local c = self._cardRect
         if mx < c.x or mx > c.x + c.w or my < c.y or my > c.y + c.h then
-            if self.onCancel then self.onCancel() end
+            if self.onCancel then
+                self.onCancel()
+            end
             self:close()
             return true
         end
@@ -156,9 +184,13 @@ function ConfirmDialog:mousepressed(mx, my, btn)
 end
 
 function ConfirmDialog:keypressed(key)
-    if not self.visible then return false end
+    if not self.visible then
+        return false
+    end
     if key == "escape" then
-        if self.onCancel then self.onCancel() end
+        if self.onCancel then
+            self.onCancel()
+        end
         self:close()
         return true
     end

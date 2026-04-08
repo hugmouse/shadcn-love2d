@@ -49,7 +49,9 @@ function Pagination.new(params)
 end
 
 function Pagination:_totalPages()
-    if self.totalItems <= 0 then return 1 end
+    if self.totalItems <= 0 then
+        return 1
+    end
     return math.ceil(self.totalItems / self.rowsPerPage)
 end
 
@@ -101,13 +103,12 @@ function Pagination:_layoutButtons()
     return rx
 end
 
-function Pagination:update(dt)
+function Pagination:update(_dt)
     local mx, my = love.mouse.getPosition()
     for i = 1, 4 do
         local r = self._btnRects[i]
         if r then
-            self._btnHovered[i] = mx >= r.x and mx <= r.x + r.w
-                and my >= r.y and my <= r.y + r.h
+            self._btnHovered[i] = mx >= r.x and mx <= r.x + r.w and my >= r.y and my <= r.y + r.h
         end
     end
 end
@@ -128,8 +129,7 @@ function Pagination:draw()
     local pageTextW = theme.textWidth(font, pageText)
     local pageTextX = btnLeftEdge - 16 - pageTextW
     love.graphics.setColor(theme.colors.foreground)
-    love.graphics.print(pageText, pageTextX,
-        self.y + (self.barH - theme.fontH.body) / 2)
+    love.graphics.print(pageText, pageTextX, self.y + (self.barH - theme.fontH.body) / 2)
 
     -- Rows per page select (left of page text)
     local rppLabelText = "Rows per page"
@@ -139,8 +139,7 @@ function Pagination:draw()
     local rppLabelX = self._rppSelect.x - 8 - rppLabelW
 
     love.graphics.setColor(theme.colors.foreground)
-    love.graphics.print(rppLabelText, rppLabelX,
-        self.y + (self.barH - theme.fontH.body) / 2)
+    love.graphics.print(rppLabelText, rppLabelX, self.y + (self.barH - theme.fontH.body) / 2)
 
     self._rppSelect:draw()
 
@@ -154,21 +153,34 @@ function Pagination:draw()
         local dis = disabled[i]
 
         if dis then
-            love.graphics.setColor(theme.colors.border[1], theme.colors.border[2],
-                theme.colors.border[3], 0.4)
+            love.graphics.setColor(
+                theme.colors.border[1],
+                theme.colors.border[2],
+                theme.colors.border[3],
+                0.4
+            )
             love.graphics.rectangle("line", br.x, br.y, br.w, br.h, r, r)
-            Icon.draw(icons[i], br.x + (br.w - 16) / 2, br.y + (br.h - 16) / 2, 16,
-                { theme.colors.muted[1], theme.colors.muted[2], theme.colors.muted[3], 0.4 })
+            Icon.draw(
+                icons[i],
+                br.x + (br.w - 16) / 2,
+                br.y + (br.h - 16) / 2,
+                16,
+                { theme.colors.muted[1], theme.colors.muted[2], theme.colors.muted[3], 0.4 }
+            )
         else
             love.graphics.setColor(theme.colors.border)
             love.graphics.rectangle("line", br.x, br.y, br.w, br.h, r, r)
             if self._btnHovered[i] then
                 love.graphics.setColor(theme.colors.hover)
-                love.graphics.rectangle("fill", br.x + 1, br.y + 1,
-                    br.w - 2, br.h - 2, r, r)
+                love.graphics.rectangle("fill", br.x + 1, br.y + 1, br.w - 2, br.h - 2, r, r)
             end
-            Icon.draw(icons[i], br.x + (br.w - 16) / 2, br.y + (br.h - 16) / 2, 16,
-                theme.colors.foreground)
+            Icon.draw(
+                icons[i],
+                br.x + (br.w - 16) / 2,
+                br.y + (br.h - 16) / 2,
+                16,
+                theme.colors.foreground
+            )
         end
     end
 
@@ -176,11 +188,15 @@ function Pagination:draw()
     love.graphics.setColor(theme.colors.muted)
     love.graphics.print(
         string.format("%d of %d row(s) selected.", self.selectedCount, self.totalItems),
-        self.x, self.y + (self.barH - theme.fontH.body) / 2)
+        self.x,
+        self.y + (self.barH - theme.fontH.body) / 2
+    )
 end
 
 function Pagination:mousepressed(mx, my, btn)
-    if btn ~= 1 then return false end
+    if btn ~= 1 then
+        return false
+    end
 
     -- Select dropdown (check first if open)
     if self._rppSelect:mousepressed(mx, my, btn) then
@@ -214,7 +230,9 @@ function Pagination:mousemoved(mx, my)
 end
 
 function Pagination:keypressed(key)
-    if self._rppSelect:keypressed(key) then return true end
+    if self._rppSelect:keypressed(key) then
+        return true
+    end
     return false
 end
 
