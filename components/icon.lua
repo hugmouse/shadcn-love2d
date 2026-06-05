@@ -2,7 +2,7 @@ local love = require("love")
 local svglover = require("lib.svglover")
 
 local lg = love.graphics
-local loadstring = load
+local compile = loadstring or load
 
 local Icon = {}
 
@@ -18,7 +18,7 @@ local function cache_icon(name, path)
     cmds = cmds:gsub("love%.graphics%.setLineWidth%([^%)]+%)\n?", "")
 
     cache[name] = {
-        func = assert(loadstring(cmds)),
+        func = assert(compile(cmds)),
         extdata = svg.extdata,
     }
 end
