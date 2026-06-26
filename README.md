@@ -2,6 +2,11 @@
 
 ![Screenshot of this application](https://github.com/user-attachments/assets/868c8f24-30be-4360-8431-ea08801fcac3)
 
+> [!WARNING]
+> This project is now archived. It will no longer receive any updates.
+>
+> WASM version deployed at https://hugmouse.github.io/shadcn-love2d/
+
 A [shadcn/ui](https://ui.shadcn.com)-inspired task management app screen copied with [LOVE 12.0](https://love2d.org).
 
 Dark-themed data table with filtering, sorting, pagination, pseudo-CRUD operations, and persistent storage.
